@@ -61,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         forecastFragment.setUseTodayLayout(!mTwoPane);
 
         SunshineSyncAdapter.initializeSyncAdapter(this);
+
     }
 
     @Override
@@ -79,7 +80,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            startActivityForResult(new Intent(this, SettingsActivity.class), 1);
             return true;
         }
 
@@ -93,6 +94,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         // update the location in our second pane using the fragment manager
             if (location != null && !location.equals(mLocation)) {
             ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+
             if ( null != ff ) {
                 ff.onLocationChanged();
             }
@@ -102,6 +104,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             }
             mLocation = location;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        SunshineSyncAdapter.syncImmediately(this);
     }
 
     @Override

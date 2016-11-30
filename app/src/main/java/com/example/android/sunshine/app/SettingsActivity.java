@@ -67,7 +67,6 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
-
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
             // the preference's 'entries' list (since they have separate labels/values).
@@ -81,6 +80,13 @@ public class SettingsActivity extends PreferenceActivity
             preference.setSummary(stringValue);
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.setResult(1);
+        finish();
+        return;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
