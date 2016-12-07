@@ -263,11 +263,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
 
             Context context = getActivity().getApplication().getApplicationContext();
-            CharSequence text = readQuote();
-            int duration = Toast.LENGTH_SHORT;
+            //CharSequence text = readQuote();
+            //int duration = Toast.LENGTH_SHORT;
 
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            //Toast toast = Toast.makeText(context, text, duration);
+            //toast.show();
         }
     }
 
