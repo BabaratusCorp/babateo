@@ -41,6 +41,22 @@ import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -95,6 +111,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindView;
     private TextView mPressureView;
+    private TextView Quote;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -243,7 +260,52 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
             }
+
+
+            Context context = getActivity().getApplication().getApplicationContext();
+            CharSequence text = readQuote();
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
         }
+    }
+
+    private String readQuote() {
+        String quote = "";
+        HttpURLConnection urlConnection = null;
+        URL url = null;
+        JSONObject object = null;
+        InputStream inStream = null;
+        try {
+            url = new URL("https://favqs.com/api/qotd");
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+            urlConnection.connect();
+            inStream = urlConnection.getInputStream();
+            BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
+            String temp, response = "";
+            while ((temp = bReader.readLine()) != null) {
+                response += temp;
+            }
+            object = (JSONObject) new JSONTokener(response).nextValue();
+            quote = response;
+        } catch (Exception e) {
+        } finally {
+            if (inStream != null) {
+                try {
+                    // this will close the bReader as well
+                    inStream.close();
+                } catch (IOException ignored) {
+                }
+            }
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return quote;
     }
 
     @Override

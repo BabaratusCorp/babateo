@@ -28,7 +28,6 @@
             android:layout_width="wrap_content"
             android:textColor="@color/white"
             android:textSize="24sp"
-            tools:text="Day"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp" />
@@ -41,7 +40,6 @@
             android:layout_width="wrap_content"
             android:textColor="@color/white"
             android:textSize="16sp"
-            tools:text="Date"
             android:layout_below="@+id/detail_day_textview"
             android:layout_centerHorizontal="true" />
 
@@ -65,7 +63,6 @@
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:textSize="60sp"
-                            tools:text="Temp1"
                             android:textColor="@color/white" />
 
                         <TextView
@@ -74,8 +71,7 @@
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:textColor="@color/white"
-                            android:textSize="48sp"
-                            tools:text="Temp2" />
+                            android:textSize="48sp" />
 
                     </LinearLayout>
 
@@ -97,8 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:textAppearanceLarge"
-                    android:textColor="@color/white"
-                    tools:text="detail" />
+                    android:textColor="@color/white" />
 
             </LinearLayout>
         </LinearLayout>
@@ -118,7 +113,6 @@
                     android:layout_width="match_parent"
                     android:textAppearance="?android:textAppearanceLarge"
                     android:gravity="top|center"
-                    android:text="Humidity"
                     android:layout_marginTop="20dp" />
 
                 <TextView
@@ -127,7 +121,6 @@
                     android:layout_width="match_parent"
                     android:textAppearance="?android:textAppearanceLarge"
                     android:gravity="center_vertical|center"
-                    android:text="Pressure"
                     android:layout_weight="0.17"
                     android:layout_marginTop="20dp" />
 
@@ -137,8 +130,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:textAppearance="?android:textAppearanceLarge"
-                    android:gravity="center"
-                    tools:text="Wind" />
+                    android:gravity="center" />
             </LinearLayout>
 
 
