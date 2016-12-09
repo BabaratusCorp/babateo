@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -49,6 +50,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Vector;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -58,13 +60,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private static final int WEATHER_NOTIFICATION_ID = 3004;
     private Context context;
 
 
-    private static final String[] NOTIFY_WEATHER_PROJECTION = new String[] {
+    private static final String[] NOTIFY_WEATHER_PROJECTION = new String[]{
             WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
@@ -86,7 +88,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(LOG_TAG, "Starting sync");
         String locationQuery = Utility.getPreferredLocation(getContext());
-        getCurrentLocation();
 
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
@@ -99,7 +100,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         String format = "json";
         String units = "metric";
         int numDays = 14;
-        Location location = getCurrentLocation();
+        //Location location = getCurrentLocation();
+        String[] latlngS = locationQuery.split(":");
+        Double[] latlng = new Double[latlngS.length];
+        latlng[0] = Double.parseDouble(latlngS[0]);
+        latlng[1] = Double.parseDouble(latlngS[1]);
 
         try {
             // Construct the URL for the OpenWeatherMap query
@@ -116,8 +121,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(LAT_PARAM, ""+location.getLatitude())
-                    .appendQueryParameter(LNG_PARAM, ""+location.getLongitude())
+                    .appendQueryParameter(LAT_PARAM, "" + latlng[0])
+                    .appendQueryParameter(LNG_PARAM, "" + latlng[1])
                     .appendQueryParameter(FORMAT_PARAM, format)
                     .appendQueryParameter(UNITS_PARAM, units)
                     .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
@@ -153,7 +158,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 return;
             }
             forecastJsonStr = buffer.toString();
-            getWeatherDataFromJson(forecastJsonStr, locationQuery, location.getLatitude(), location.getLongitude());
+            getWeatherDataFromJson(forecastJsonStr, locationQuery, latlng[0], latlng[1]);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
@@ -176,7 +181,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         return;
     }
 
-    private Location getCurrentLocation() {
+    /*private Location getCurrentLocation() {
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(LOCATION_SERVICE);
 
@@ -186,8 +191,18 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         //    ContextCompat.(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         String provider = locationManager.getBestProvider(criteria, true);
-         return locationManager.getLastKnownLocation(provider);
-    }
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            //return TODO;
+        }
+        return locationManager.getLastKnownLocation(provider);
+    }*/
 
     /**
      * Take the String representing the complete forecast in JSON Format and

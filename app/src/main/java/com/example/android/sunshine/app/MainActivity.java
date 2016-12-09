@@ -16,18 +16,25 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private static final int PLACE_PICKER_REQUEST = 1;
 
     private boolean mTwoPane;
     private String mLocation;
@@ -83,8 +90,35 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             startActivityForResult(new Intent(this, SettingsActivity.class), 1);
             return true;
         }
+        if(id == R.id.action_location)
+        {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                Intent intent = builder.build(getApplicationContext());
+                startActivityForResult(intent,PLACE_PICKER_REQUEST);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void onActivityResult(int requestCode,int resultCode, Intent data){
+        if(requestCode == PLACE_PICKER_REQUEST)
+        {
+            if(resultCode == RESULT_OK){
+                Place place = PlacePicker.getPlace(data, getApplicationContext());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                String latlng = place.getLatLng().latitude + ":" + place.getLatLng().longitude;
+                editor.putString(getString(R.string.pref_location_key),latlng);
+                editor.commit();
+                SunshineSyncAdapter.syncImmediately(this);
+            }
+        }
     }
 
     @Override

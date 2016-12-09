@@ -13,6 +13,7 @@
          typically from the action bar.  The ActionBar is limited real estate, so shorter is better.
     -->
     <string name="action_settings">Settings</string>
+    <string name="action_location">Location</string>
     <string name="action_map">Map Location</string>
     <string name="action_share">Share</string>
 
@@ -27,8 +28,8 @@
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_location_key" translatable="false">location</string>
 
-    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
-    <string name="pref_location_default" translatable="false">94043</string>
+    <!-- Default latlng for location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_location_default" translatable="false">45.5087:-73.554</string>
 
     <!-- Strings related to Notification Enabled preference -->
     <string name="pref_enable_notifications_key" translatable="false">enable_notifications</string>
@@ -93,5 +94,7 @@
 
     <!-- Strings related to Notification preference -->
     <string name="pref_last_notification">last_notification</string>
+
+    <string name="google_place_api">AIzaSyDuwGj_l3DxeDqM4GVl18PKD2BC-PhPyyY</string>
 
 </resources>

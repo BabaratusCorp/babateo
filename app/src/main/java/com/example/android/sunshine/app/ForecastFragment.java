@@ -106,7 +106,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.forecastfragment, menu);
+        //inflater.inflate(R.menu.forecastfragment, menu);
     }
 
     @Override
@@ -119,10 +119,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 //            updateWeather();
 //            return true;
 //        }
-        if (id == R.id.action_map) {
-            openPreferredLocationInMap();
-            return true;
-        }
+        //if (id == R.id.action_map) {
+            //openPreferredLocationInMap();
+            //return true;
+       // }
 
         return super.onOptionsItemSelected(item);
     }
